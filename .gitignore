@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+*.log
+*.sqlite3
+
+# Build
+build/
+dist/
+*.whl
+*.tar.gz
+
+# VSCode
+.vscode/
+
+# Entornos virtuales
+.venv/
+.env
+
+# PyInstaller
+*.spec
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Mac
+.DS_Store
+
