@@ -1,0 +1,21 @@
+[project]
+name = "dynamus-devops"
+version = "0.0.1"
+description = "DevOps del ecosistema Dynamus para generación y orquestación modular de proyectos."
+authors = [
+  { name = "Federico Monfasani", email = "fmonfasani@gmail.com" }
+]
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent"
+]
+
+[tool.setuptools]
+packages = { find = { where = ["src"] } }
+
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"

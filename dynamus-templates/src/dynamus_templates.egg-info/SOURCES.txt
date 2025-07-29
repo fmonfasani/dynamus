@@ -1,0 +1,7 @@
+LICENSE
+README.md
+pyproject.toml
+src/dynamus_templates.egg-info/PKG-INFO
+src/dynamus_templates.egg-info/SOURCES.txt
+src/dynamus_templates.egg-info/dependency_links.txt
+src/dynamus_templates.egg-info/top_level.txt

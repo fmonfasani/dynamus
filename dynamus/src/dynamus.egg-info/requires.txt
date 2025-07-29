@@ -1,0 +1,8 @@
+dynamus-agent>=0.0.1
+dynamus-core>=0.0.1
+dynamus-backend>=0.0.1
+dynamus-frontend>=0.0.1
+dynamus-devops>=0.0.1
+dynamus-cli>=0.0.1
+dynamus-ai>=0.0.1
+dynamus-templates>=0.0.1
