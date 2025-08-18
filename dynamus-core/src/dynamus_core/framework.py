@@ -114,6 +114,14 @@ class TemplateBasedGenerator(CodeGenerator):
         
         # Cargar plantillas
         self._load_templates()
+
+    def get_supported_frameworks(self) -> List[str]:
+        """Obtiene los frameworks soportados basados en las plantillas disponibles"""
+        return list({name.split("/")[0] for name in self.templates.keys()})
+
+    def get_dependencies(self, context: GenerationContext) -> List[str]:
+        """Retorna una lista de dependencias necesarias"""
+        return []
     
     def _setup_jinja_filters(self):
         """Configura filtros personalizados para Jinja2"""
@@ -201,6 +209,28 @@ class TemplateBasedGenerator(CodeGenerator):
             
             template.load_template(self.jinja_env)
             self.templates[template_name] = template
+
+    def _get_primary_key_field(self, entity: EntityDefinition) -> Optional[FieldDefinition]:
+        """Retorna el primer campo marcado como primary_key"""
+        for field in entity.fields:
+            if field.primary_key:
+                return field
+        return None
+
+    def _get_relevant_templates(self, context: GenerationContext) -> Dict[str, CodeTemplate]:
+        """Filtra las plantillas según el framework y arquitectura del contexto"""
+        relevant: Dict[str, CodeTemplate] = {}
+        for name, template in self.templates.items():
+            parts = name.split("/")
+            if not parts:
+                continue
+            if parts[0] != context.framework:
+                continue
+            if len(parts) > 1 and parts[1] in {"layered", "clean", "hexagonal", "microservice"}:
+                if parts[1] != context.architecture:
+                    continue
+            relevant[name] = template
+        return relevant
     
     def _generate_output_pattern(self, template_name: str) -> str:
         """Genera patrón de salida para una plantilla"""
@@ -228,6 +258,11 @@ class TemplateBasedGenerator(CodeGenerator):
         
         # Filtrar plantillas relevantes
         relevant_templates = self._get_relevant_templates(context)
+
+        if not relevant_templates:
+            raise ValueError(
+                f"No se encontraron plantillas para framework '{context.framework}' y arquitectura '{context.architecture}'"
+            )
         
         # Generar código para cada plantilla
         for template_name, template in relevant_templates.items():
@@ -285,5 +320,5 @@ class TemplateBasedGenerator(CodeGenerator):
         
         if "soft_delete" in context.features:
             template_context["include_soft_delete"] = True
-        
+
         return template_context
