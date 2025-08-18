@@ -1,4 +1,4 @@
-# src/genesis_agents/base/genesis_agent.py
+# src/dynamus_agent/agents/agent_base.py
 """
 Clase base para todos los agentes Genesis - Hub Independiente
 
@@ -51,7 +51,7 @@ except ImportError:
 
 # Imports locales (se crearán después)
 try:
-    from genesis_agents.base.capabilities import AgentCapability
+    from dynamus_agent.agents.capabilities import AgentCapability
 except ImportError:
     # Fallback temporal para desarrollo
     class AgentCapability(str, Enum):
@@ -59,9 +59,9 @@ except ImportError:
         API_GENERATION = "api_generation"
 
 try:
-    from genesis_agents.base.exceptions import (
-        AgentException, 
-        TaskExecutionError, 
+    from dynamus_agent.agents.exceptions import (
+        AgentException,
+        TaskExecutionError,
         AgentInitializationError,
         TaskTimeoutError,
         AgentOverloadError,

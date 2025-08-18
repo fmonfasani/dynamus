@@ -1,4 +1,4 @@
-# src/genesis_agents/base/exceptions.py
+# src/dynamus_agent/agents/exceptions.py
 """
 Excepciones específicas para agentes Genesis
 """

@@ -1,4 +1,4 @@
-# src/genesis_agents/base/capabilities.py
+# src/dynamus_agent/agents/capabilities.py
 """
 Definición de capacidades de agentes Genesis - Hub Independiente
 

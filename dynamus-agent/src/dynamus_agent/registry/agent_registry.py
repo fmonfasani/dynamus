@@ -1,4 +1,4 @@
-# src/genesis_agents/registry/agent_registry.py
+# src/dynamus_agent/registry/agent_registry.py
 """
 Registry central de agentes con auto-discovery - Hub Independiente
 
@@ -17,9 +17,9 @@ from pathlib import Path
 # DEPENDENCIA: Solo MCPturbo (hub independiente)
 from mcpturbo.agents import AgentRegistry as MCPAgentRegistry
 
-from genesis_agents.base.genesis_agent import GenesisAgent
-from genesis_agents.base.capabilities import AgentCapability, CapabilityCategory
-from genesis_agents.base.exceptions import AgentRegistryError, AgentDiscoveryError
+from dynamus_agent.agents.agent_base import GenesisAgent
+from dynamus_agent.agents.capabilities import AgentCapability, CapabilityCategory
+from dynamus_agent.agents.exceptions import AgentRegistryError, AgentDiscoveryError
 
 
 class GenesisAgentRegistry:
@@ -249,7 +249,7 @@ class GenesisAgentRegistry:
             self.capabilities_map[capability].append(agent_id)
             
             # Mapear por categoría
-            from genesis_agents.base.capabilities import get_capability_category
+            from dynamus_agent.agents.capabilities import get_capability_category
             category = get_capability_category(capability)
             if category not in self.category_map:
                 self.category_map[category] = []
@@ -280,7 +280,7 @@ class GenesisAgentRegistry:
             self.stats["agents_by_type"][agent_type] = self.stats["agents_by_type"].get(agent_type, 0) + 1
             
             # Por categorías
-            from genesis_agents.base.capabilities import get_capability_category
+            from dynamus_agent.agents.capabilities import get_capability_category
             categories = set(get_capability_category(cap) for cap in agent.get_capabilities())
             for category in categories:
                 cat_name = category.value

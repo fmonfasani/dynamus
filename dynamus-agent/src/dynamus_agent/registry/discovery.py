@@ -1,4 +1,4 @@
-# src/genesis_agents/registry/discovery.py
+# src/dynamus_agent/registry/discovery.py
 """
 Auto-discovery de agentes en el ecosistema - Hub Independiente
 
@@ -15,7 +15,7 @@ from typing import List, Dict, Set, Optional
 from pathlib import Path
 import sys
 
-from genesis_agents.base.exceptions import AgentDiscoveryError
+from dynamus_agent.agents.exceptions import AgentDiscoveryError
 
 
 class AgentDiscovery:
@@ -58,7 +58,7 @@ class AgentDiscovery:
             "genesis_testing.agents",
             
             # Agentes built-in del hub
-            "genesis_agents.builtin",
+            "dynamus_agent.builtin",
         ]
         
         available_modules = []
@@ -143,8 +143,8 @@ class AgentDiscovery:
         try:
             import pkg_resources
             
-            # Buscar entry points del grupo 'genesis_agents'
-            for entry_point in pkg_resources.iter_entry_points('genesis_agents'):
+            # Buscar entry points del grupo 'dynamus_agent'
+            for entry_point in pkg_resources.iter_entry_points('dynamus_agent'):
                 try:
                     module_name = entry_point.module_name
                     discovered.append(module_name)
