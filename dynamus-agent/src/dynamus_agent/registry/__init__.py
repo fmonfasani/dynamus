@@ -1,4 +1,4 @@
-# src/genesis_agents/__init__.py
+# src/dynamus_agent/registry/__init__.py
 """
 Genesis Agents - Independent Hub for Genesis Engine Ecosystem
 
@@ -12,8 +12,8 @@ Key Components:
 - AgentDiscovery: Discovery strategies for ecosystem agents
 
 Usage:
-    from genesis_agents import GenesisAgent, AgentCapability
-    from genesis_agents.registry import GenesisAgentRegistry
+    from dynamus_agent import GenesisAgent, AgentCapability
+    from dynamus_agent.registry import GenesisAgentRegistry
     
     # Create custom agent
     class MyAgent(GenesisAgent):
@@ -39,7 +39,7 @@ __author__ = "Genesis Team"
 __email__ = "team@genesis-engine.dev"
 
 # Core exports
-from genesis_agents.base.genesis_agent import (
+from dynamus_agent.agents.agent_base import (
     GenesisAgent,
     AgentTask,
     TaskResult,
@@ -48,7 +48,7 @@ from genesis_agents.base.genesis_agent import (
     ExampleGenesisAgent  # For testing/examples only
 )
 
-from genesis_agents.base.capabilities import (
+from dynamus_agent.agents.capabilities import (
     AgentCapability,
     CapabilityCategory,
     get_capabilities_by_category,
@@ -57,7 +57,7 @@ from genesis_agents.base.capabilities import (
     COMMON_AGENT_CAPABILITIES
 )
 
-from genesis_agents.base.exceptions import (
+from dynamus_agent.agents.exceptions import (
     AgentException,
     AgentInitializationError,
     TaskExecutionError,
@@ -70,8 +70,8 @@ from genesis_agents.base.exceptions import (
 )
 
 # Registry exports
-from genesis_agents.registry.agent_registry import GenesisAgentRegistry
-from genesis_agents.registry.discovery import (
+from dynamus_agent.registry.agent_registry import GenesisAgentRegistry
+from dynamus_agent.registry.discovery import (
     AgentDiscovery,
     DiscoveryStrategy,
     create_default_strategy,
@@ -81,7 +81,7 @@ from genesis_agents.registry.discovery import (
 
 # Communication exports
 try:
-    from genesis_agents.communication.mcp_bridge import MCPBridge
+    from dynamus_agent.communication.mcp_bridge import MCPBridge
 except ImportError:
     # MCPBridge might depend on additional packages
     MCPBridge = None
