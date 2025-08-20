@@ -376,6 +376,8 @@ class GenesisAgent(MCPBaseAgent, ABC):
         
         # Tareas y ejecución
         self.current_tasks: Dict[str, AgentTask] = {}
+        # Referencias a las asyncio.Task activas para permitir cancelación
+        self._task_refs: Dict[str, asyncio.Task] = {}
         self.task_history: List[AgentTask] = []
         self.task_queue: asyncio.Queue = asyncio.Queue()
         
@@ -566,6 +568,10 @@ class GenesisAgent(MCPBaseAgent, ABC):
         start_time = datetime.utcnow()
         self.status = AgentStatus.BUSY
         self.current_tasks[task.id] = task
+        # Registrar la asyncio.Task actual para permitir cancelación en shutdown
+        current_async_task = asyncio.current_task()
+        if current_async_task:
+            self._task_refs[task.id] = current_async_task
         
         try:
             self.logger.info(
@@ -658,6 +664,7 @@ class GenesisAgent(MCPBaseAgent, ABC):
         finally:
             # Cleanup
             self.current_tasks.pop(task.id, None)
+            self._task_refs.pop(task.id, None)
             self.task_history.append(task)
             
             # Mantener historial limitado
@@ -1020,20 +1027,35 @@ class GenesisAgent(MCPBaseAgent, ABC):
         """Shutdown graceful de tareas activas"""
         if not self.current_tasks:
             return
-        
-        self.logger.info(f"[SHUTDOWN] Gracefully stopping {len(self.current_tasks)} active tasks")
-        
+
+        self.logger.info(
+            f"[SHUTDOWN] Gracefully stopping {len(self.current_tasks)} active tasks"
+        )
+
+        # Mantener referencias a las asyncio.Task activas
+        active_tasks = list(self._task_refs.values())
+
         # Dar tiempo a las tareas para completar
         try:
             await asyncio.wait_for(
                 self._wait_for_tasks_completion(),
-                timeout=self._shutdown_timeout
+                timeout=self._shutdown_timeout,
             )
         except asyncio.TimeoutError:
-            self.logger.warning(f"[SHUTDOWN] Tasks did not complete in {self._shutdown_timeout}s, forcing stop")
-        
+            self.logger.warning(
+                f"[SHUTDOWN] Tasks did not complete in {self._shutdown_timeout}s, forcing stop"
+            )
+
+        # Cancelar tareas pendientes y esperar su finalización
+        pending = [t for t in active_tasks if not t.done()]
+        for task in pending:
+            task.cancel()
+        if pending:
+            await asyncio.gather(*pending, return_exceptions=True)
+
         # Limpiar tareas restantes
         self.current_tasks.clear()
+        self._task_refs.clear()
     
     async def _wait_for_tasks_completion(self):
         """Esperar a que las tareas activas se completen"""
