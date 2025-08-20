@@ -5,12 +5,27 @@ class AgentRegistry:
     def register(cls, agent_cls):
         """Register an agent class.
 
-        The class must be instantiable without arguments and the resulting
-        instance must expose an ``agent_id`` attribute. The instance is stored
-        in the registry under this identifier.
+        ``agent_cls`` must be instantiable without arguments. During
+        registration, the class is instantiated and the resulting object is
+        expected to expose an ``agent_id`` attribute used as the registry key.
+
+        Raises:
+            ValueError: If instantiation fails or the instance lacks an
+                ``agent_id`` attribute.
         """
 
-        agent = agent_cls()
+        try:
+            agent = agent_cls()
+        except Exception as exc:  # noqa: BLE001 - propagate as ValueError
+            raise ValueError(
+                f"Failed to instantiate agent class {agent_cls!r}"
+            ) from exc
+
+        if not hasattr(agent, "agent_id"):
+            raise ValueError(
+                f"Agent instance of {agent_cls.__name__} must define 'agent_id'"
+            )
+
         cls._registry[agent.agent_id] = agent
 
     @classmethod
