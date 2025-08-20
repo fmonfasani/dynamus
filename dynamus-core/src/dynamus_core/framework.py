@@ -8,6 +8,9 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from jinja2 import Environment, FileSystemLoader, Template
 from pathlib import Path
+import logging
+
+logger = logging.getLogger(__name__)
 
 @dataclass
 class FieldDefinition:
@@ -266,15 +269,17 @@ class TemplateBasedGenerator(CodeGenerator):
             try:
                 # Renderizar plantilla
                 code = template.render(template_context)
-                
+
                 # Obtener ruta de salida
                 output_path = template.get_output_path(context)
-                
+
                 generated_files[output_path] = code
-                
+
             except Exception as e:
-                raise RuntimeError(f"Error generando {template_name}: {e}")
-        
+                if logger:
+                    logger.error("Error generando %s: %s", template_name, e, exc_info=True)
+                raise RuntimeError(f"Error generando {template_name}: {e}") from e
+
         return generated_files
     
     def _prepare_template_context(self, context: GenerationContext) -> Dict[str, Any]:
