@@ -24,6 +24,9 @@ dependencies = [
   "dynamus-templates>=0.0.1"
 ]
 
+[project.scripts]
+dynamus = "dynamus.cli:main"
+
 [tool.setuptools]
 packages = { find = { where = ["src"] } }
 
